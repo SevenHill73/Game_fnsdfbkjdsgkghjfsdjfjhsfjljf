@@ -5,10 +5,10 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxG;
 import flixel.text.FlxText;
-using flixel.util.FlxSpriteUtil;
+import flixel.util.FlxSpriteUtil;
 class PlayState extends FlxState
 {
-	public var stage:FlxSprite;
+	public var stage:Stage;
 	var fighter:Fighter;
 	var debugText:FlxText;
 	//Instance
@@ -28,15 +28,21 @@ class PlayState extends FlxState
         debugText.y += 300;
 
 		stage = new Stage('fd');
+		//The real touchable ground
+		add(stage.ground);
 		add(stage);
+		
+		
+		
  
-		fighter = new Fighter("placeholder",2);
+		fighter = new Fighter("placeholder");
 		fighter.screenCenter();
 		fighter.y -= 50;
 		add(fighter);
-		
+
 		add(debugText);
 		instance = this;
+		
 	}
 	public function text(...str:Dynamic) {
         debugText.text = Std.string(str);
@@ -44,7 +50,9 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		text(FlxG.mouse.getPosition(),stage.width);
+		text(Std.int(fighter.velocity.y),Std.int(fighter.acceleration.y));
 		debugText.screenCenter();
+		
+		
 	}
 }
