@@ -1,5 +1,7 @@
 package;
 
+import flixel.input.keyboard.FlxKeyboard;
+import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -17,6 +19,7 @@ class PlayState extends FlxState
 	public var stageID:String;
 	override public function create()
 	{
+		stage = new Stage('fd');
 		FlxG.state.bgColor = FlxColor.CYAN;
 		instance = new PlayState();
 		super.create();
@@ -27,8 +30,9 @@ class PlayState extends FlxState
         
         debugText.y += 300;
 
-		stage = new Stage('fd');
+		
 		//The real touchable ground
+		
 		add(stage.ground);
 		add(stage);
 		
@@ -38,21 +42,22 @@ class PlayState extends FlxState
 		fighter = new Fighter("placeholder");
 		fighter.screenCenter();
 		fighter.y -= 50;
-		add(fighter);
 
+		for (i in stage.blastzone) add(i);
+		add(fighter);
 		add(debugText);
+
 		instance = this;
-		
 	}
 	public function text(...str:Dynamic) {
         debugText.text = Std.string(str);
+		
     }
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		text(Std.int(fighter.velocity.y),Std.int(fighter.acceleration.y));
 		debugText.screenCenter();
-		
+	
 		
 	}
 }

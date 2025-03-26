@@ -1,17 +1,25 @@
 package;
+import flixel.util.FlxColor;
+import flixel.input.keyboard.FlxKey;
 import flixel.FlxG;
 import flixel.FlxSprite;
+using flixel.util.FlxSpriteUtil;
+enum Moveset {
+    Jab;
+    ForwardTilt;
+    UpTilt;
+    DownTilt;
+}
 class Fighter extends FlxSprite {
     var id:String;
-
     //This is for the short hop and the full hop
 	var jumpTimer:Int = 0;
 
 	// Basic Properties
 	var WALKING_SPEED:Float = 1;
 	var RUNNING_SPEED:Float = 1;
-	var FALLING_SPEED:Float = 5;
-	var JUMP_HEIGHT:Float = 5;
+	var FALLING_SPEED:Float = 1;
+	var JUMP_HEIGHT:Float = 1;
 
     //Double Jump
 	var maximumAirJump = 1;
@@ -32,6 +40,8 @@ class Fighter extends FlxSprite {
 		{
 			case 'placeholder':
 				maximumAirJump = 10;
+                makeGraphic(50,50,FlxColor.WHITE);
+				
 		}
     }
     override function update(elapsed:Float){
@@ -39,8 +49,9 @@ class Fighter extends FlxSprite {
 		FlxG.collide(PlayState.instance.stage.ground, this);
 		hop();
 		move();
+        attack();
 	}
-
+    
 	function formula(?type:String):Float
 	{
 		switch (type)
@@ -50,7 +61,7 @@ class Fighter extends FlxSprite {
 			case 'fall':
 				return 500.0 * FALLING_SPEED;
 			case 'fullhop':
-				return 200.732577 * JUMP_HEIGHT; // funny
+				return 200 * JUMP_HEIGHT;
 			case 'shorthop':
 				return 130.0 * JUMP_HEIGHT;
 			default: // run
@@ -61,17 +72,21 @@ class Fighter extends FlxSprite {
 	private function move()
 	{
 		// Hold Key DASH = Run
-		FlxG.keys.anyPressed(KeyBinds.DASH) ? RUNNING = true : RUNNING = false;
+		FlxG.keys.anyPressed([KeyBinds.Keys.get("DASH")]) ? RUNNING = true : RUNNING = false;
 		// Move
-		if (FlxG.keys.anyPressed(KeyBinds.MOVE_LEFT))
+		if (FlxG.keys.anyPressed([KeyBinds.Keys.get("MOVE_LEFT")]))
 		{
+            facing = LEFT;
+            setFacingFlip(LEFT,true,false);
 			RUNNING ? velocity.x = formula() * -1 : velocity.x = formula("walk") * -1;
 		}
-		else if (FlxG.keys.anyPressed(KeyBinds.MOVE_RIGHT))
+		else if (FlxG.keys.anyPressed([KeyBinds.Keys.get("MOVE_RIGHT")]))
 		{
+            facing = RIGHT;
+            setFacingFlip(RIGHT,false,false);
 			RUNNING ? velocity.x = formula() : velocity.x = formula("walk");
 		}
-		if (FlxG.keys.anyJustReleased(KeyBinds.MOVE_LEFT.concat(KeyBinds.MOVE_RIGHT)))
+		if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get("MOVE_LEFT")].concat([KeyBinds.Keys.get("MOVE_RIGHT")])))
 		{
 			velocity.x = 0;
 		}
@@ -82,7 +97,7 @@ class Fighter extends FlxSprite {
 		// Short Hop and Ground Full Hop
         if (isTouching(DOWN)){
 			FALLING = false;
-			if (FlxG.keys.anyPressed(KeyBinds.JUMP))
+			if (FlxG.keys.anyPressed([KeyBinds.Keys.get("JUMP")]))
 			{
                 jumpTimer += 1;
                 if (jumpTimer >= 6) {
@@ -90,7 +105,7 @@ class Fighter extends FlxSprite {
                     jumpTimer = 0;
                 }
             }
-			if (FlxG.keys.anyJustReleased(KeyBinds.JUMP) && jumpTimer < 6 && jumpTimer > 1)
+			if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get("JUMP")]) && jumpTimer < 6 && jumpTimer > 1)
 			{
 				velocity.y = formula("shorthop") * -1;
                 jumpTimer = 0;
@@ -98,7 +113,7 @@ class Fighter extends FlxSprite {
         }
         
         //Full Hop In the Air
-		if (FlxG.keys.anyJustPressed(KeyBinds.JUMP))
+		if (FlxG.keys.anyJustPressed([KeyBinds.Keys.get("JUMP")]))
 		{
 			FALLING = false;
             JUMP -= 1;
@@ -112,5 +127,13 @@ class Fighter extends FlxSprite {
 			FALLING = true;
         if(FALLING)
             acceleration.y = formula('fall');
+    }
+    
+    private function attack(){
+        if(FlxG.keys.anyJustPressed([KeyBinds.Keys.get("ATTACK")]))
+			//Haxe wouldn't let me use switch for some reason
+            if(FlxKey.toStringMap.get(FlxG.keys.firstJustPressed()) == KeyBinds.Keys.get("MOVE_RIGHT")){
+
+            }  
     }
 }
