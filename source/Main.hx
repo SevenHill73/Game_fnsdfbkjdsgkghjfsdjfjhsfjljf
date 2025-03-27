@@ -10,6 +10,6 @@ class Main extends Sprite
 	{
 		super();
 		//FlxG.stage.quality = openfl.display.StageQuality.BEST;
-		addChild(new FlxGame(0, 0, PlayState));
+		addChild(new FlxGame(0, 0, FighterState));
 	}
 }

@@ -11,7 +11,7 @@ enum Moveset {
     DownTilt;
 }
 class Fighter extends FlxSprite {
-    var id:String;
+
     //This is for the short hop and the full hop
 	var jumpTimer:Int = 0;
 
@@ -26,27 +26,30 @@ class Fighter extends FlxSprite {
 
 	// Status
 	var FALLING:Bool = true;
-	var RUNNING:Bool = false;
+	var RUNNING:Bool = true;
 
 	var JUMP = 2;
 
-	public function new(id:String)
+	public function new(id:Int)
 	{
         super();
-        this.id = id;
 		//maxVelocity.y = 500;
         JUMP = maximumAirJump + 1;
 		switch (id)
 		{
-			case 'placeholder':
-				maximumAirJump = 10;
-                makeGraphic(50,50,FlxColor.WHITE);
+			case 1:
+				maximumAirJump = 99;
+                makeGraphic(20,20,FlxColor.WHITE);
 				
 		}
     }
     override function update(elapsed:Float){
         super.update(elapsed);
 		FlxG.collide(PlayState.instance.stage.ground, this);
+		for (i in PlayState.instance.stage.blastzone) 
+			if(FlxG.collide(i,this)){
+				kill();
+			}
 		hop();
 		move();
         attack();
@@ -71,8 +74,8 @@ class Fighter extends FlxSprite {
 
 	private function move()
 	{
-		// Hold Key DASH = Run
-		FlxG.keys.anyPressed([KeyBinds.Keys.get("DASH")]) ? RUNNING = true : RUNNING = false;
+		// Key DASH = Run
+		//FlxG.keys.anyPressed([KeyBinds.Keys.get("DASH")]) ? RUNNING = true : RUNNING = false;
 		// Move
 		if (FlxG.keys.anyPressed([KeyBinds.Keys.get("MOVE_LEFT")]))
 		{
