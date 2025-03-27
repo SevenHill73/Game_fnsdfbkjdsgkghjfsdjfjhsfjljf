@@ -1,4 +1,5 @@
 package;
+import flixel.system.macros.FlxMacroUtil;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -9,16 +10,15 @@ import flixel.util.FlxColor;
 import haxe.ds.List;
 //CHOOSE YOUR FIGHTER!
 class FighterState extends FlxState {
-    public static var fightersID:Map<Int, String> = [
+    public static var fightersID:Map<Int, String> = [ //No Repeat Please :)
         0 => "PlaceHolder",
-        1 => "PlaceHolder",
-    	2 => "PlaceHolder"
+        1 => "PlaceHolder1"
+        
     ];
-
+    public static var reversedFightersID:Map<String,Int> = new Map();
+    
+    public static var selectedFighters:Array<Int> = new Array();
     var fighterBlockGroup:Array<FlxButton> = new Array();
-
-    //I don't like 2D array
-    var playerGroup:List<Array<Int>> = new List();
 
     //more player support in the future
     final maximumPlayer = 2;
@@ -33,7 +33,9 @@ class FighterState extends FlxState {
     var removePlayer:FlxButton;
 
     var player_selecting:FlxSprite;
+
     override function create() {
+        
         //FlxG.mouse.useSystemCursor = true;
         debugText = new DebugText();
         debugText.y += 300;
@@ -50,19 +52,26 @@ class FighterState extends FlxState {
 
         background = new FlxSprite().makeGraphic(FlxG.width,FlxG.height,FlxColor.BROWN);
         add(background);
-        //Turn List into Blocks
+
+        //Turn Map into Blocks
         var x = 0;
         for(i in fightersID) {
-            fighterBlockGroup[x] = new FlxButton(0,0,i,fighterBlockClicked);
+            fighterBlockGroup[x] = new FlxButton(0,0,i);
             fighterBlockGroup[x].makeGraphic(80,60);
             fighterBlockGroup[x].x = x * 100;
             add(fighterBlockGroup[x]);
             x++;
         }
-        add(debugText);
+
         add(player_selecting);
 
         add(removePlayer);
+        
+        add(debugText);
+
+        //Adding values to the reversed fightersid map
+        for(i in fightersID.keyValueIterator())
+            reversedFightersID.set(i.value,i.key);
         
     }
     override function update(elapsed:Float) {
@@ -78,8 +87,15 @@ class FighterState extends FlxState {
         
         _currentPlayer > 2 ? removePlayer.visible = true : removePlayer.visible = false;
 
-        for(i in 0...fighterBlockGroup.length)
+        //Get what people selected and Button Text Position Adjust
+        for(i in 0...fighterBlockGroup.length){
+            if(fighterBlockGroup[i].justReleased) { 
+                selectedFighters[_currentPlayer-1] = reversedFightersID.get(fighterBlockGroup[i].text);
+                fighterBlockClicked();
+            }
+            debugText.print(selectedFighters);
             fighterBlockGroup[i].label.y = fighterBlockGroup[i].label.origin.y + 30;
+        }
     }
     function battlePlayerSet(){
         PlayState.totalPlayer = _currentPlayer - 1;
@@ -88,8 +104,9 @@ class FighterState extends FlxState {
     function fighterBlockClicked(){
         _currentPlayer += 1;
         //playerGroup.add([]);
-        if(_currentPlayer > maximumPlayer)
+        if(_currentPlayer > maximumPlayer){
             PlayState.totalPlayer = _currentPlayer;
             FlxG.switchState(PlayState.new);
+        }
     }
 }

@@ -1,8 +1,9 @@
 package;
-import flixel.util.FlxColor;
-import flixel.input.keyboard.FlxKey;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.input.keyboard.FlxKey;
+import flixel.util.FlxColor;
+
 using flixel.util.FlxSpriteUtil;
 enum Moveset {
     Jab;
@@ -38,11 +39,15 @@ class Fighter extends FlxSprite {
 		this.playerId = playerId;
 		//maxVelocity.y = 500;
         JUMP = maximumAirJump + 1;
-		switch (characterId)
+		var name = FighterState.fightersID.get(characterId);
+		switch (name)
 		{
-			case 1:
+			case 'PlaceHolder':
 				maximumAirJump = 99;
                 makeGraphic(20,20,FlxColor.WHITE);
+			case 'PlaceHolder1':
+				maximumAirJump = 99;
+                makeGraphic(20,20,FlxColor.RED);
 				
 		}
     }
@@ -78,21 +83,21 @@ class Fighter extends FlxSprite {
 	private function move()
 	{
 		// Key DASH = Run
-		//FlxG.keys.anyPressed([KeyBinds.Keys.get("DASH")]) ? RUNNING = true : RUNNING = false;
+		FlxG.keys.anyPressed([KeyBinds.Keys.get('DASH_PLAYER${playerId}')]) ? RUNNING = true : RUNNING = false;
 		// Move
-		if (FlxG.keys.anyPressed([KeyBinds.Keys.get('MOVE_LEFT${playerId}')]))
+		if (FlxG.keys.anyPressed([KeyBinds.Keys.get('MOVE_LEFT_PLAYER${playerId}')]))
 		{
             facing = LEFT;
             setFacingFlip(LEFT,true,false);
 			RUNNING ? velocity.x = formula() * -1 : velocity.x = formula("walk") * -1;
 		}
-		else if (FlxG.keys.anyPressed([KeyBinds.Keys.get('MOVE_RIGHT${playerId}')]))
+		else if (FlxG.keys.anyPressed([KeyBinds.Keys.get('MOVE_RIGHT_PLAYER${playerId}')]))
 		{
             facing = RIGHT;
             setFacingFlip(RIGHT,false,false);
 			RUNNING ? velocity.x = formula() : velocity.x = formula("walk");
 		}
-		if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get('MOVE_LEFT${playerId}')].concat([KeyBinds.Keys.get('MOVE_RIGHT${playerId}')])))
+		if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get('MOVE_LEFT_PLAYER${playerId}')].concat([KeyBinds.Keys.get('MOVE_RIGHT_PLAYER${playerId}')])))
 		{
 			velocity.x = 0;
 		}
@@ -103,7 +108,7 @@ class Fighter extends FlxSprite {
 		// Short Hop and Ground Full Hop
         if (isTouching(DOWN)){
 			FALLING = false;
-			if (FlxG.keys.anyPressed([KeyBinds.Keys.get('JUMP${playerId}')]))
+			if (FlxG.keys.anyPressed([KeyBinds.Keys.get('JUMP_PLAYER${playerId}')]))
 			{
                 jumpTimer += 1;
                 if (jumpTimer >= 6) {
@@ -111,7 +116,7 @@ class Fighter extends FlxSprite {
                     jumpTimer = 0;
                 }
             }
-			if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get('JUMP${playerId}')]) && jumpTimer < 6 && jumpTimer > 1)
+			if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get('JUMP_PLAYER${playerId}')]) && jumpTimer < 6 && jumpTimer > 1)
 			{
 				velocity.y = formula("shorthop") * -1;
                 jumpTimer = 0;
@@ -119,7 +124,7 @@ class Fighter extends FlxSprite {
         }
         
         //Full Hop In the Air
-		if (FlxG.keys.anyJustPressed([KeyBinds.Keys.get('JUMP${playerId}')]))
+		if (FlxG.keys.anyJustPressed([KeyBinds.Keys.get('JUMP_PLAYER${playerId}')]))
 		{
 			FALLING = false;
             JUMP -= 1;
@@ -136,7 +141,7 @@ class Fighter extends FlxSprite {
     }
     
     private function attack(){
-        if(FlxG.keys.anyJustPressed([KeyBinds.Keys.get('ATTACK${playerId}')]))
+		if (FlxG.keys.anyJustPressed([KeyBinds.Keys.get('ATTACK_PLAYER${playerId}')]))
 			//Haxe wouldn't let me use switch for some reason
             if(FlxKey.toStringMap.get(FlxG.keys.firstJustPressed()) == KeyBinds.Keys.get("MOVE_RIGHT")){
 

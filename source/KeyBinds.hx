@@ -3,12 +3,12 @@ import flixel.input.keyboard.FlxKey;
 class KeyBinds {
     public static var Keys:Map<String, FlxKey> = 
     [
-    "JUMP" => W,
-    "MOVE_LEFT" => A,
-    "MOVE_RIGHT" => D,
-    "CROUCH" => S,
-    "DASH" => SHIFT,
-    "ATTACK" => F,
+    "JUMP_PLAYER1" => W,
+    "MOVE_LEFT_PLAYER1" => A,
+    "MOVE_RIGHT_PLAYER1" => D,
+    "CROUCH_PLAYER1" => S,
+    "DASH_PLAYER1" => SHIFT,
+    "ATTACK_PLAYER1" => F,
 
     "JUMP_PLAYER2" => I,
     "MOVE_LEFT_PLAYER2" => J,

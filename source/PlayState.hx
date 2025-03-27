@@ -20,6 +20,7 @@ class PlayState extends FlxState
 	public static var totalPlayer:Int = 0;
 
 	public var stageID:String;
+
 	override public function create()
 	{
 		gameCam = FlxG.camera;
@@ -37,13 +38,13 @@ class PlayState extends FlxState
 		add(stage.ground);
 		add(stage);
  
-		for(i in 0...totalPlayer){
-			fighter[i] = new Fighter(1, i);
+		for(i in 1...totalPlayer){ //no [0] cuz no
+			fighter[i] = new Fighter(FighterState.selectedFighters[i-1], i);
 			fighter[i].screenCenter();
 			fighter[i].y -= 50;
 			add(fighter[i]);
-			trace(i);
 		}
+		trace(fighter[1]);
 
 		//gameCam.setPosition(100,100);
 
