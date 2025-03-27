@@ -19,16 +19,14 @@ class Stage extends FlxSprite{
         ground = new FlxSprite().makeGraphic(500,10,FlxColor.RED);
         ground.immovable = true;
 
-        
-
         //sorry im too stupid
         //horizontal blastzones
         blastzone = [
-        new FlxSprite(0,0).makeGraphic(10,FlxG.height,FlxColor.RED),
-        new FlxSprite(FlxG.width - 8,0).makeGraphic(10,FlxG.height,FlxColor.RED),
-        //vertical blastzones
-        new FlxSprite(0,0).makeGraphic(FlxG.width,10,FlxColor.RED),
-        new FlxSprite(0,FlxG.height - 8).makeGraphic(FlxG.width,10,FlxColor.RED)
+            new FlxSprite(0,0).makeGraphic(10,FlxG.height,FlxColor.RED),
+            new FlxSprite(FlxG.width - 8,0).makeGraphic(10,FlxG.height,FlxColor.RED),
+            //vertical blastzones
+            new FlxSprite(0,0).makeGraphic(FlxG.width,10,FlxColor.RED),
+            new FlxSprite(0,FlxG.height - 8).makeGraphic(FlxG.width,10,FlxColor.RED)
         ];
         for(i in blastzone) i.immovable = true;
 
