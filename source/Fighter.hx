@@ -1,21 +1,16 @@
 package;
+import lime.app.Event;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
-
 using flixel.util.FlxSpriteUtil;
-enum Moveset {
-    Jab;
-    ForwardTilt;
-    UpTilt;
-    DownTilt;
-}
 class Fighter extends FlxSprite {
-
+	var moveSet:Map<String,Void->Void> = new Map();
     //This is for the short hop and the full hop
 	var jumpTimer:Int = 0;
-
+	//This is for tilts/chargeable attack
+	var attackTimer:Int = 0;
+	//Init
 	// Basic Properties
 	var WALKING_SPEED:Float = 1;
 	var RUNNING_SPEED:Float = 1;
@@ -27,40 +22,45 @@ class Fighter extends FlxSprite {
 
 	// Status
 	var FALLING:Bool = true;
-	var RUNNING:Bool = true;
+	var RUNNING:Bool = false;
+	var STILL:Bool = true; 
+	var JUMP:Int = 2;
+	var AIRBORN:Bool =  true;
 
-	var JUMP = 2;
+	var playerId(default,set):Int;
+	var characterId:Int;
 
-	var playerId:Int;
-
+	public var IN_GAME:Bool = true;
 	public function new(characterId:Int,playerId:Int)
 	{
         super();
+		this.characterId = characterId;
 		this.playerId = playerId;
-		//maxVelocity.y = 500;
+
         JUMP = maximumAirJump + 1;
+		loadFighterGraphic(characterId);
+    }
+	public function loadFighterGraphic(characterId:Int){
 		var name = FighterState.fightersID.get(characterId);
 		switch (name)
 		{
 			case 'PlaceHolder':
-				maximumAirJump = 99;
                 makeGraphic(20,20,FlxColor.WHITE);
-			case 'PlaceHolder1':
-				maximumAirJump = 99;
-                makeGraphic(20,20,FlxColor.RED);
-				
 		}
-    }
+	}
     override function update(elapsed:Float){
         super.update(elapsed);
-		FlxG.collide(PlayState.instance.stage.ground, this);
-		for (i in PlayState.instance.stage.blastzone) 
-			if(FlxG.collide(i,this)){
-				kill();
-			}
-		hop();
-		move();
-        attack();
+		if(IN_GAME){
+			FlxG.collide(PlayState.instance.stage.ground, this);
+			AIRBORN = isTouching(DOWN) ? false : true;
+			for (i in PlayState.instance.stage.blastzone) 
+				if(FlxG.collide(i,this))
+					kill();
+				
+			hop();
+			move();
+			setMoves();
+		}
 	}
     
 	function formula(?type:String):Float
@@ -68,83 +68,115 @@ class Fighter extends FlxSprite {
 		switch (type)
 		{
 			case "walk":
-				return 100.0 * WALKING_SPEED;
+				return (300.0 * WALKING_SPEED) * 0.4;
 			case 'fall':
-				return 500.0 * FALLING_SPEED;
+				return (1000.0 * FALLING_SPEED) * 0.4;
 			case 'fullhop':
-				return 200 * JUMP_HEIGHT;
+				return (400 * JUMP_HEIGHT) * 0.4;
 			case 'shorthop':
-				return 130.0 * JUMP_HEIGHT;
+				return (260.0 * JUMP_HEIGHT) * 0.4;
 			default: // run
-				return 300.0 * RUNNING_SPEED;
+				return (600.0 * RUNNING_SPEED) * 0.4;
 		}
 	}
 
 	private function move()
 	{
 		// Key DASH = Run
-		FlxG.keys.anyPressed([KeyBinds.Keys.get('DASH_PLAYER${playerId}')]) ? RUNNING = true : RUNNING = false;
+		justPressed('dash', true) ? RUNNING = true : RUNNING = false;
 		// Move
-		if (FlxG.keys.anyPressed([KeyBinds.Keys.get('MOVE_LEFT_PLAYER${playerId}')]))
+		if (justPressed('move_left', true))
 		{
             facing = LEFT;
             setFacingFlip(LEFT,true,false);
 			RUNNING ? velocity.x = formula() * -1 : velocity.x = formula("walk") * -1;
 		}
-		else if (FlxG.keys.anyPressed([KeyBinds.Keys.get('MOVE_RIGHT_PLAYER${playerId}')]))
+		else if (justPressed('move_right', true))
 		{
             facing = RIGHT;
             setFacingFlip(RIGHT,false,false);
 			RUNNING ? velocity.x = formula() : velocity.x = formula("walk");
 		}
-		if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get('MOVE_LEFT_PLAYER${playerId}')].concat([KeyBinds.Keys.get('MOVE_RIGHT_PLAYER${playerId}')])))
-		{
+		else{
 			velocity.x = 0;
 		}
+
+		velocity.x == 0 ? STILL = true : STILL = false;
 	}
 
 	private function hop()
 	{
+					
 		// Short Hop and Ground Full Hop
-        if (isTouching(DOWN)){
+        if (!AIRBORN){
 			FALLING = false;
-			if (FlxG.keys.anyPressed([KeyBinds.Keys.get('JUMP_PLAYER${playerId}')]))
+			if (justPressed('jump',true))
 			{
                 jumpTimer += 1;
-                if (jumpTimer >= 6) {
+				if (jumpTimer >= 6){
+					FALLING = false;
+					JUMP -= 1;
 					velocity.y = formula("fullhop") * -1;
-                    jumpTimer = 0;
-                }
+					jumpTimer = 0;
+				}
             }
-			if (FlxG.keys.anyJustReleased([KeyBinds.Keys.get('JUMP_PLAYER${playerId}')]) && jumpTimer < 6 && jumpTimer > 1)
+			if (justReleased('jump') && jumpTimer < 6 && jumpTimer > 0)
 			{
+				FALLING = false;
+				JUMP -= 1;
 				velocity.y = formula("shorthop") * -1;
-                jumpTimer = 0;
+				jumpTimer = 0;
+				
             }
-        }
-        
-        //Full Hop In the Air
-		if (FlxG.keys.anyJustPressed([KeyBinds.Keys.get('JUMP_PLAYER${playerId}')]))
-		{
-			FALLING = false;
-            JUMP -= 1;
-            if(!isTouching(DOWN) && JUMP > -1)
-				velocity.y = formula("fullhop") * -1;
-        }
+		}
+		else{
+			if (justPressed('jump'))
+			{
+				FALLING = false;
+				JUMP -= 1;
+				if(JUMP > -1)
+					velocity.y = formula("fullhop") * -1;
+        	}
+		}
 		// Reset
-        if(isTouching(DOWN) && (JUMP == 0 || JUMP != maximumAirJump))
+        if((JUMP == 0 || JUMP != maximumAirJump) && isTouching(DOWN))
             JUMP = maximumAirJump;
-		if (velocity.y < -1)
+		if (velocity.y > 0)
 			FALLING = true;
         if(FALLING)
-            acceleration.y = formula('fall');
-    }
-    
-    private function attack(){
-		if (FlxG.keys.anyJustPressed([KeyBinds.Keys.get('ATTACK_PLAYER${playerId}')]))
-			//Haxe wouldn't let me use switch for some reason
-            if(FlxKey.toStringMap.get(FlxG.keys.firstJustPressed()) == KeyBinds.Keys.get("MOVE_RIGHT")){
+            acceleration.y = formula('fall');    
+	}
+	var moveInputted = new Event<Void->Void>();
+	private function newMove(name:String, input:Bool){
+		moveSet.set(name,function(){
+			if(input){
+				switch(name){
+					case 'jab':
+						trace('jab');
+					case 'forward_tilt':
+						trace('forward_tilt');
+					default:
+						return;
+				}
+			}
+		});
+	}
+    private function setMoves(){
+		newMove('jab', STILL && justPressed('attack'));
+		newMove('forward_tilt', !STILL && justPressed('attack'));
 
-            }  
+		for(i in moveSet.keyValueIterator()) i.value();
     }
+
+	private function justPressed(str:String,anypressed:Bool = false):Bool{
+		if(anypressed)
+			return FlxG.keys.anyPressed([KeyBinds.Keys.get('${str.toUpperCase()}_PLAYER${playerId}')]);
+		else
+			return FlxG.keys.anyJustPressed([KeyBinds.Keys.get('${str.toUpperCase()}_PLAYER${playerId}')]);
+	}
+	private function justReleased(str:String):Bool return FlxG.keys.anyJustReleased([KeyBinds.Keys.get('${str.toUpperCase()}_PLAYER${playerId}')]);
+
+
+	public function set_playerId(value:Int):Int return playerId = value;
+	
 }

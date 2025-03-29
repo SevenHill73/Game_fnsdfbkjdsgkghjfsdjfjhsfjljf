@@ -20,13 +20,11 @@ class Stage extends FlxSprite{
         ground.immovable = true;
 
         //sorry im too stupid
-        //horizontal blastzones
         blastzone = [
             new FlxSprite(0,0).makeGraphic(10,FlxG.height,FlxColor.RED),
-            new FlxSprite(FlxG.width - 8,0).makeGraphic(10,FlxG.height,FlxColor.RED),
-            //vertical blastzones
+            new FlxSprite(FlxG.width - 15,0).makeGraphic(10,FlxG.height,FlxColor.RED),
             new FlxSprite(0,0).makeGraphic(FlxG.width,10,FlxColor.RED),
-            new FlxSprite(0,FlxG.height - 8).makeGraphic(FlxG.width,10,FlxColor.RED)
+            new FlxSprite(0,FlxG.height - 15).makeGraphic(FlxG.width,10,FlxColor.RED)
         ];
         for(i in blastzone) i.immovable = true;
 
@@ -38,8 +36,8 @@ class Stage extends FlxSprite{
                     makeGraphic(500, 40,FlxColor.WHITE);
                     screenCenter();
                     y += 100;
-                    ground.screenCenter();
-                    ground.y += 100;
+                    ground.screenCenter(X);
+                    ground.y = y;
             }
     }
     override function update(elapsed:Float) {

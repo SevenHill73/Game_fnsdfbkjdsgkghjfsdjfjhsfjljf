@@ -1,4 +1,6 @@
 package;
+import flixel.input.keyboard.FlxKey;
+import flixel.input.FlxInput;
 import flixel.system.macros.FlxMacroUtil;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -11,24 +13,20 @@ import haxe.ds.List;
 //CHOOSE YOUR FIGHTER!
 class FighterState extends FlxState {
     public static var fightersID:Map<Int, String> = [ //No Repeat Please :)
-        0 => "PlaceHolder",
-        1 => "PlaceHolder1"
-        
+        0 => "PlaceHolder"
     ];
     public static var reversedFightersID:Map<String,Int> = new Map();
-    
+
     public static var selectedFighters:Array<Int> = new Array();
     var fighterBlockGroup:Array<FlxButton> = new Array();
 
     //more player support in the future
-    final maximumPlayer = 2;
+    final maximumPlayer = 1;
 
     var background:FlxSprite;
 
     //The player who is selecting
     var _currentPlayer:Int = 1;
-
-    var debugText:DebugText;
 
     var removePlayer:FlxButton;
 
@@ -37,8 +35,6 @@ class FighterState extends FlxState {
     override function create() {
         
         //FlxG.mouse.useSystemCursor = true;
-        debugText = new DebugText();
-        debugText.y += 300;
 
         super.create();
 
@@ -67,7 +63,6 @@ class FighterState extends FlxState {
 
         add(removePlayer);
         
-        add(debugText);
 
         //Adding values to the reversed fightersid map
         for(i in fightersID.keyValueIterator())
@@ -76,6 +71,9 @@ class FighterState extends FlxState {
     }
     override function update(elapsed:Float) {
         super.update(elapsed);
+        if(FlxG.keys.pressed.H&&FlxG.keys.pressed.CONTROL&&FlxG.keys.pressed.SHIFT)
+            FlxG.switchState(HitboxEditState.new);
+        
         player_selecting.animation.play(Std.string(_currentPlayer));
         player_selecting.setPosition(FlxG.mouse.x - 40,FlxG.mouse.y - 35);
 
@@ -93,7 +91,6 @@ class FighterState extends FlxState {
                 selectedFighters[_currentPlayer-1] = reversedFightersID.get(fighterBlockGroup[i].text);
                 fighterBlockClicked();
             }
-            debugText.print(selectedFighters);
             fighterBlockGroup[i].label.y = fighterBlockGroup[i].label.origin.y + 30;
         }
     }

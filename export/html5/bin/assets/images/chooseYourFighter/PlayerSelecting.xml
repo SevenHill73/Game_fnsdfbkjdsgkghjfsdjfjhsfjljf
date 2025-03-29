@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="PlayerSelecting.png">
+	<!-- Created using the Spritesheet and XML generator -->
+	<!-- https://uncertainprod.github.io/FNF-Spritesheet-XML-generator-Web -->
+	<SubTexture name="player40000" x="52" y="0" width="52" height="52" frameX="2" frameY="2" frameWidth="48" frameHeight="48"/>
+	<SubTexture name="player30000" x="104" y="0" width="52" height="52" frameX="2" frameY="2" frameWidth="48" frameHeight="48"/>
+	<SubTexture name="player20000" x="0" y="52" width="52" height="52" frameX="2" frameY="2" frameWidth="48" frameHeight="48"/>
+	<SubTexture name="player10000" x="0" y="0" width="52" height="52" frameX="2" frameY="2" frameWidth="48" frameHeight="48"/>
+</TextureAtlas>
