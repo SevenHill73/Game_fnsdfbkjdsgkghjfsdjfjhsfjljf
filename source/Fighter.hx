@@ -27,8 +27,10 @@ class Fighter extends FlxSprite {
 	var JUMP:Int = 2;
 	var AIRBORN:Bool =  true;
 
-	var playerId(default,set):Int;
-	var characterId:Int;
+	public var playerId:Int;
+	public var characterId:Int;
+
+	public var hitboxes:Hitbox;
 
 	public var IN_GAME:Bool = true;
 	public function new(characterId:Int,playerId:Int)
@@ -37,17 +39,31 @@ class Fighter extends FlxSprite {
 		this.characterId = characterId;
 		this.playerId = playerId;
 
+		hitboxes = new Hitbox('${FighterState.fightersID.get(characterId)}.json');
+
         JUMP = maximumAirJump + 1;
 		loadFighterGraphic(characterId);
+		loadFighterData(characterId);
     }
 	public function loadFighterGraphic(characterId:Int){
 		var name = FighterState.fightersID.get(characterId);
 		switch (name)
 		{
 			case 'PlaceHolder':
-                makeGraphic(20,20,FlxColor.WHITE);
+                frames = flixel.graphics.frames.FlxAtlasFrames.fromSparrow('assets/images/fighters/${name}/${name}.png','assets/images/fighters/${name}/${name}.xml');
+		}
+		animation.addByPrefix('idle','idle',24,false);
+		animation.addByPrefix('jab','jab',24,false);
+	}
+	public function loadFighterData(characterId:Int){
+		var name = FighterState.fightersID.get(characterId);
+		switch (name)
+		{
+			case 'PlaceHolder':
+                maximumAirJump = 99;
 		}
 	}
+
     override function update(elapsed:Float){
         super.update(elapsed);
 		if(IN_GAME){
@@ -147,7 +163,7 @@ class Fighter extends FlxSprite {
             acceleration.y = formula('fall');    
 	}
 	var moveInputted = new Event<Void->Void>();
-	private function newMove(name:String, input:Bool){
+	private function addAndCheck_Moves(name:String, input:Bool){
 		moveSet.set(name,function(){
 			if(input){
 				switch(name){
@@ -155,6 +171,10 @@ class Fighter extends FlxSprite {
 						trace('jab');
 					case 'forward_tilt':
 						trace('forward_tilt');
+					case 'up_tilt':
+
+					case 'down_tilt':
+
 					default:
 						return;
 				}
@@ -162,8 +182,10 @@ class Fighter extends FlxSprite {
 		});
 	}
     private function setMoves(){
-		newMove('jab', STILL && justPressed('attack'));
-		newMove('forward_tilt', !STILL && justPressed('attack'));
+		addAndCheck_Moves('jab', STILL && justPressed('attack'));
+		addAndCheck_Moves('forward_tilt', !STILL && justPressed('attack'));
+		addAndCheck_Moves('down_tilt', justPressed('crouch') && justPressed('attack'));
+		addAndCheck_Moves('up_tilt', justPressed('jump') && justPressed('attack'));
 
 		for(i in moveSet.keyValueIterator()) i.value();
     }
@@ -174,9 +196,5 @@ class Fighter extends FlxSprite {
 		else
 			return FlxG.keys.anyJustPressed([KeyBinds.Keys.get('${str.toUpperCase()}_PLAYER${playerId}')]);
 	}
-	private function justReleased(str:String):Bool return FlxG.keys.anyJustReleased([KeyBinds.Keys.get('${str.toUpperCase()}_PLAYER${playerId}')]);
-
-
-	public function set_playerId(value:Int):Int return playerId = value;
-	
+	private function justReleased(str:String):Bool return FlxG.keys.anyJustReleased([KeyBinds.Keys.get('${str.toUpperCase()}_PLAYER${playerId}')]);	
 }

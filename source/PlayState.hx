@@ -68,7 +68,7 @@ class PlayState extends FlxState
 		add(debugText);
 		add(camCenter);
 
-		//gameCam.follow(camCenter);
+		gameCam.follow(camCenter);
 		gameCam.setScrollBounds(0,FlxG.width,0,FlxG.height);
 	}
 	function gameCameraFollow(){

@@ -21,7 +21,7 @@ class FighterState extends FlxState {
     var fighterBlockGroup:Array<FlxButton> = new Array();
 
     //more player support in the future
-    final maximumPlayer = 1;
+    final maximumPlayer = 2;
 
     var background:FlxSprite;
 
@@ -71,9 +71,11 @@ class FighterState extends FlxState {
     }
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if(FlxG.keys.pressed.H&&FlxG.keys.pressed.CONTROL&&FlxG.keys.pressed.SHIFT)
-            FlxG.switchState(HitboxEditState.new);
-        
+        #if MakeHitboxState
+        if(FlxG.keys.justPressed.H){
+            FlxG.switchState(MakeHitboxState.new);
+        }
+        #end
         player_selecting.animation.play(Std.string(_currentPlayer));
         player_selecting.setPosition(FlxG.mouse.x - 40,FlxG.mouse.y - 35);
 

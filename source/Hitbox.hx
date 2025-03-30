@@ -3,31 +3,25 @@ import flixel.FlxSprite;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxColor;
 import flixel.FlxG;
+import haxe.Json;
+import openfl.utils.Assets;
 enum HitBoxType{
     NORMAL;
 }
+var data:Dynamic;
 class Hitbox extends FlxSprite {
-    public var IN_GAME = true;
-    var draggable = true;
-    public function new(HitboxType:EnumValue,size:Int = 20) {
+    public function new(im:String) {
         super();
-        init(size);
-    }
-    public function init(size:Int = 20){
-        makeGraphic(size,size,FlxColor.TRANSPARENT);
-        FlxSpriteUtil.drawCircle(this,this.x,this.y,-1,{color:FlxColor.RED});
-        if(IN_GAME){
-            visible = false;
-        }
-        else{
-            screenCenter();
-            draggable = true;
-        }
+        if(data != null)
+            data = Json.parse(Assets.getText('assets/data/fighters/hitboxes/${im}'));
+        visible = true;
     }
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if(draggable){
-            setPosition();
-        }
+        FlxSpriteUtil.fill(this,0);
+        FlxSpriteUtil.drawCircle(this,this.x,this.y,-1,FlxColor.RED);
+    }
+    public function useHitbox(){
+
     }
 }
