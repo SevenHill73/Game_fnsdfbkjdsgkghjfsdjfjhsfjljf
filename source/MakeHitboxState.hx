@@ -13,18 +13,24 @@ class MakeHitboxState extends FlxState{
     var fighterAnimationSelection:FlxUIDropDownMenu;
     var curframe:FlxText;
     var createHitbox:FlxButton;
+    var hitBoxes:List<Hitbox>;
     override function create() {
         super.create();
         FlxG.state.bgColor = FlxColor.CYAN;
 
         createHitbox = new FlxButton(0,600,'Create A Hitbx for this frame',createAHitbox);
+        createHitbox.scale.y = 1.5;
+        createHitbox.updateHitbox();
 
         fighter = new Fighter(0,0);
         fighter.screenCenter();
         fighter.IN_GAME = false;
         fighter.animation.play('idle');
+        fighter.animation.pause();
+        fighter.animation.curAnim.curFrame = 0;
 
-        curframe = new FlxText(0,300);
+        curframe = new FlxText(0,300,'hi');
+        curframe.color = FlxColor.BLACK;
 
         var n = 0;
         var fighterArray:Array<StrNameLabel> = new Array();
@@ -47,9 +53,8 @@ class MakeHitboxState extends FlxState{
         fighterAnimationSelection.callback = (str:String) -> {
             fighter.animation.play(str);
             fighter.animation.pause();
-            fighter.animation.frameIndex = 0;
+            fighter.animation.curAnim.curFrame = 0;
         };
-
 
         add(fighterAnimationSelection);
         add(fighterSelection);
@@ -59,20 +64,30 @@ class MakeHitboxState extends FlxState{
     }
     override function update(elapsed:Float) {
         super.update(elapsed);
-        curframe.text = Std.string(fighter.animation.frameIndex);
+        curframe.screenCenter(Y);
+        curframe.text = 'CurFrame: ${Std.string(fighter.animation.curAnim.curFrame)}\nTotal Frame: ${Std.string(fighter.animation.curAnim.numFrames)}';
         if(FlxG.keys.justPressed.LEFT){
-            fighter.animation.frameIndex -= 1;
-            if(fighter.animation.frameIndex < 1)
-                fighter.animation.frameIndex = fighter.animation.curAnim.numFrames;
+            if(fighter.animation.curAnim.curFrame < 0)
+                fighter.animation.curAnim.curFrame = fighter.animation.curAnim.numFrames;
+            else
+                fighter.animation.curAnim.curFrame -= 1;
         }
-        else if(FlxG.keys.justPressed.RIGHT){
-            fighter.animation.frameIndex += 1;
-            if(fighter.animation.frameIndex > fighter.animation.curAnim.numFrames)
-                fighter.animation.frameIndex = 1;
+        if(FlxG.keys.justPressed.RIGHT){
+            if(fighter.animation.curAnim.curFrame < fighter.animation.curAnim.numFrames)
+                fighter.animation.curAnim.curFrame += 1;
+                
+            else
+                fighter.animation.curAnim.curFrame = 0;
         }
     }
     function createAHitbox(){
-        
+        hitBoxes.add(new Hitbox(null,fighter.animation.curAnim.curFrame));
+        for(i in hitBoxes){
+            if(Lambda.has(this.members,i))
+                continue;
+            else
+                add(i);
+        }
     }
 }
 #end

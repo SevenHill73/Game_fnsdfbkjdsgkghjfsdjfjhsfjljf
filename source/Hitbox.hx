@@ -8,12 +8,15 @@ import openfl.utils.Assets;
 enum HitBoxType{
     NORMAL;
 }
-var data:Dynamic;
+
 class Hitbox extends FlxSprite {
-    public function new(im:String) {
+    var data:Dynamic;
+    var fighterName:String;
+    public function new(?fighterName:String,frame = 0) {
         super();
-        if(data != null)
-            data = Json.parse(Assets.getText('assets/data/fighters/hitboxes/${im}'));
+        this.fighterName = fighterName;
+        if(fighterName != null && Assets.exists('assets/data/fighters/hitboxes/${fighterName.toLowerCase()}.json'))
+            data = Json.parse(Assets.getText('assets/data/fighters/hitboxes/${fighterName.toLowerCase()}.json'));
         visible = true;
     }
     override function update(elapsed:Float) {

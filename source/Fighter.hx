@@ -50,10 +50,13 @@ class Fighter extends FlxSprite {
 		switch (name)
 		{
 			case 'PlaceHolder':
-                frames = flixel.graphics.frames.FlxAtlasFrames.fromSparrow('assets/images/fighters/${name}/${name}.png','assets/images/fighters/${name}/${name}.xml');
+                //frames = flixel.graphics.frames.FlxAtlasFrames.fromSparrow('assets/images/fighters/${name}/${name}.png','assets/images/fighters/${name}/${name}.xml');
+				makeGraphic(20,20);
 		}
-		animation.addByPrefix('idle','idle',24,false);
-		animation.addByPrefix('jab','jab',24,false);
+		if(frames != null){
+			animation.addByPrefix('idle','idle',24,false);
+			animation.addByPrefix('jab','jab',24,false);
+		}
 	}
 	public function loadFighterData(characterId:Int){
 		var name = FighterState.fightersID.get(characterId);

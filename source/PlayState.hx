@@ -34,9 +34,9 @@ class PlayState extends FlxState
 		super.create();
 		gameCam = FlxG.camera;
 
-		// line = new FlxSprite();
-		// line.makeGraphic(FlxG.width,FlxG.height,0,true);
-		// add(line);
+		line = new FlxSprite();
+		line.makeGraphic(FlxG.width,FlxG.height,0,true);
+		add(line);
 
 		FlxG.state.bgColor = FlxColor.CYAN;
 
@@ -47,7 +47,7 @@ class PlayState extends FlxState
 		stageID = "fd";
 
 		camCenter = new FlxSprite().makeGraphic(10,10);
-		camCenter.alpha = 0;
+		camCenter.alpha = 1;
 		
 		
 		//The real touchable ground(Ground hitbox)
@@ -71,6 +71,10 @@ class PlayState extends FlxState
 		gameCam.follow(camCenter);
 		gameCam.setScrollBounds(0,FlxG.width,0,FlxG.height);
 	}
+	var tmp:Array<Float> = new Array();
+	var tmp2:Array<Float> = new Array();
+	var tmpList:List<Float>;
+	var tmp2List:List<Float>;
 	function gameCameraFollow(){
 		//The Game Camera should be centered on the players.
 		/*In order to do that: 
@@ -80,20 +84,19 @@ class PlayState extends FlxState
 		*/
 
 		//Not Optimal
-		var tmp:Array<Float> = new Array();
-		var tmp2:Array<Float> = new Array();
 		for(i in 0...totalPlayer - 1){
 			tmp[i] = Math.abs(stage.blastzone[0].x - fighter[i].x);
 			tmp2[i] = Math.abs(stage.blastzone[1].x - fighter[i].x);
 		}
 		//idk why but Array.indexof() does not work so I used lambda
-		var tmpList = Lambda.list(tmp);
-		var tmp2List = Lambda.list(tmp2);
+		tmpList = Lambda.list(tmp);
+		tmp2List = Lambda.list(tmp2);
 		var a = Lambda.indexOf(tmpList,Utility.min(tmpList));
 		var b = Lambda.indexOf(tmp2List,Utility.min(tmp2List));
 
-		// FlxSpriteUtil.fill(line,0);
-		// FlxSpriteUtil.drawLine(line,fighter[a].x,fighter[a].y,fighter[b].x,fighter[b].y,{color:FlxColor.BROWN,thickness:3});
+		FlxSpriteUtil.fill(line,0);
+		camCenter.setPosition((fighter[a].x + fighter[b].x)/2,(fighter[a].y + fighter[b].y)/2 - 30);
+		FlxSpriteUtil.drawLine(line,fighter[a].x,fighter[a].y,fighter[b].x,fighter[b].y,{color:FlxColor.BROWN,thickness:3});
 		
 	}
 	override public function update(elapsed:Float)
