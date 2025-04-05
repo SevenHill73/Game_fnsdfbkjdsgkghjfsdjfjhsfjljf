@@ -13,7 +13,7 @@ class MakeHitboxState extends FlxState{
     var fighterAnimationSelection:FlxUIDropDownMenu;
     var curframe:FlxText;
     var createHitbox:FlxButton;
-    var hitBoxes:List<Hitbox>;
+    var hitBoxes:List<Hitbox> = new List();
     override function create() {
         super.create();
         FlxG.state.bgColor = FlxColor.CYAN;
@@ -24,7 +24,6 @@ class MakeHitboxState extends FlxState{
 
         fighter = new Fighter(0,0);
         fighter.screenCenter();
-        fighter.IN_GAME = false;
         fighter.animation.play('idle');
         fighter.animation.pause();
         fighter.animation.curAnim.curFrame = 0;
@@ -83,6 +82,7 @@ class MakeHitboxState extends FlxState{
     function createAHitbox(){
         hitBoxes.add(new Hitbox(null,fighter.animation.curAnim.curFrame));
         for(i in hitBoxes){
+            i.screenCenter();
             if(Lambda.has(this.members,i))
                 continue;
             else

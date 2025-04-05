@@ -1,4 +1,5 @@
 package;
+import haxe.Exception;
 import flixel.FlxSprite;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxColor;
@@ -15,8 +16,12 @@ class Hitbox extends FlxSprite {
     public function new(?fighterName:String,frame = 0) {
         super();
         this.fighterName = fighterName;
-        if(fighterName != null && Assets.exists('assets/data/fighters/hitboxes/${fighterName.toLowerCase()}.json'))
+        try{
             data = Json.parse(Assets.getText('assets/data/fighters/hitboxes/${fighterName.toLowerCase()}.json'));
+        }
+        catch(e:Exception){
+            trace("Failed on loading JSON");
+        }
         visible = true;
     }
     override function update(elapsed:Float) {

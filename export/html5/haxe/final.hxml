@@ -12,6 +12,12 @@
 -D hscript=2.6.0
 -cp /usr/local/lib/haxe/lib/flixel-ui/2,6,4
 -D flixel-ui=2.6.4
+-cp /usr/local/lib/haxe/lib/goap/0,1,0/src
+-D goap=0.1.0
+-cp /usr/local/lib/haxe/lib/astar/2,1,0/src
+-D astar=2.1.0
+-cp /usr/local/lib/haxe/lib/tjson/1,4,0
+-D tjson=1.4.0
 -cp source
 -D message.reporting=pretty
 -D howlerjs

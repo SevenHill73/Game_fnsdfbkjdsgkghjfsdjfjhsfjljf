@@ -1,0 +1,9 @@
+{
+    "offset": {
+        "jab": [0,0],
+        "down_tilt": [0,0],
+        "forward_tilt": [0,0],
+        "up_tilt": [0,0],
+        "idle": [0,0]
+    }
+}

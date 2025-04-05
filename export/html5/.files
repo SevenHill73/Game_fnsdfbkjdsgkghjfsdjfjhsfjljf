@@ -10,6 +10,7 @@ export/html5/bin/assets/images/chooseYourFighter/PlayerSelecting.xml
 export/html5/bin/assets/images/images-go-here.txt
 export/html5/bin/assets/sounds/sounds-go-here.txt
 export/html5/bin/assets/data/data-goes-here.txt
+export/html5/bin/assets/data/fighters/animation/placeholder.json
 export/html5/bin/flixel/sounds/flixel.mp3
 export/html5/bin/flixel/sounds/beep.mp3
 export/html5/bin/flixel/sounds/beep.ogg

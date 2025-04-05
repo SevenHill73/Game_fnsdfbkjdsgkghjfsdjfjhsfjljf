@@ -21,7 +21,7 @@ class FighterState extends FlxState {
     var fighterBlockGroup:Array<FlxButton> = new Array();
 
     //more player support in the future
-    final maximumPlayer = 2;
+    final maximumPlayer = 1;
 
     var background:FlxSprite;
 
@@ -102,7 +102,6 @@ class FighterState extends FlxState {
     }
     function fighterBlockClicked(){
         _currentPlayer += 1;
-        //playerGroup.add([]);
         if(_currentPlayer > maximumPlayer){
             PlayState.totalPlayer = _currentPlayer;
             FlxG.switchState(PlayState.new);

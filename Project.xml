@@ -37,6 +37,8 @@
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-ui" />
+	<haxelib name="goap" />
+	<haxelib name="tjson" />
 
 
 	<haxedef name="MakeHitboxState" if="debug"/>
