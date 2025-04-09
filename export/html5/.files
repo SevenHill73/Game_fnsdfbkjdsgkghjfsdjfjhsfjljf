@@ -1,4 +1,5 @@
 export/html5/bin/assets/music/music-goes-here.txt
+export/html5/bin/assets/images/hitboxes.png
 export/html5/bin/assets/images/fighters/PlaceHolder/PlaceHolder.xml
 export/html5/bin/assets/images/fighters/PlaceHolder/PlaceHolder.png
 export/html5/bin/assets/images/chooseYourFighter/grayscalePlayer/player3.png
@@ -10,6 +11,7 @@ export/html5/bin/assets/images/chooseYourFighter/PlayerSelecting.xml
 export/html5/bin/assets/images/images-go-here.txt
 export/html5/bin/assets/sounds/sounds-go-here.txt
 export/html5/bin/assets/data/data-goes-here.txt
+export/html5/bin/assets/data/fighters/hitboxes/placeholder.json
 export/html5/bin/assets/data/fighters/animation/placeholder.json
 export/html5/bin/flixel/sounds/flixel.mp3
 export/html5/bin/flixel/sounds/beep.mp3
@@ -49,4 +51,8 @@ export/html5/bin/flixel/flixel-ui/img/button_arrow_down.png
 export/html5/bin/flixel/flixel-ui/xml/default_popup.xml
 export/html5/bin/flixel/flixel-ui/xml/default_loading_screen.xml
 export/html5/bin/flixel/flixel-ui/xml/defaults.xml
+export/html5/bin/flixel/images/transitions/circle.png
+export/html5/bin/flixel/images/transitions/diagonal_gradient.png
+export/html5/bin/flixel/images/transitions/diamond.png
+export/html5/bin/flixel/images/transitions/square.png
 export/html5/bin/manifest/default.json

@@ -55,7 +55,7 @@ class PlayState extends FlxState
 		add(stage);
  
 		for(i in 0...totalPlayer - 1){
-			fighter[i] = new Fighter(FighterState.selectedFighters[i], i+1);
+			fighter[i] = new ControllableFighter(FighterState.selectedFighters[i], i+1);
 			fighter[i].screenCenter();
 			fighter[i].y -= 50;
 			add(fighter[i]);
